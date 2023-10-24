@@ -2,6 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EnemyType
+{
+    OneHand, 
+    TwoHand, 
+    Archer
+}
+
+public enum PatrolType
+{
+    Linear, Random, Loop
+}
+
 public class EnemyManager : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -36,6 +48,19 @@ public class EnemyManager : MonoBehaviour
             KillSpecificEnemis(killCondition);
     }
 
+
+    IEnumerator SpawnEnemiesWithDelay()
+    {
+        //Week 4
+        for (int i = 0; i < spawnPoints.Length; i++)
+        {
+            int rnd = Random.Range(0, enemyTypes.Length);
+            GameObject enemy = Instantiate(enemyTypes[rnd], spawnPoints[i].position, spawnPoints[i].rotation);
+            yield return new WaitForSeconds(2);
+        }
+
+    }
+
     /// <summary>
     /// Spaqns an enemy at every spawn point
     /// </summary>
@@ -45,9 +70,10 @@ public class EnemyManager : MonoBehaviour
         for (int i = 0; i < spawnPoints.Length; i++)
         {
             int rnd = Random.Range(0, enemyTypes.Length);
-            GameObject enemy = Instantiate(enemyTypes[0], spawnPoints[i].position, spawnPoints[i].rotation);
+            GameObject enemy = Instantiate(enemyTypes[rnd], spawnPoints[i].position, spawnPoints[i].rotation);
         }
     }
+
 
     /// <summary>
     /// Spawn a random enemy at a random spawn point
@@ -88,7 +114,7 @@ public class EnemyManager : MonoBehaviour
         if (enemies.Count == 0)
             return;
 
-        for (int i = enemies.Count-1; i >= 0;  i--)
+        for (int i = enemies.Count - 1; i >= 0; i--)
         {
             KillEnemy(enemies[i]);
         }
@@ -107,6 +133,14 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Get a random spawn Point/Week 4
+    /// </summary>
+    /// <returns></returns>
+    public Transform GetRandomSpawnPoint()
+    {
+        return spawnPoints[Random.Range(0, spawnPoints.Length)];
+    }
 
     void Examples()
     {
