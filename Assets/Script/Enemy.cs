@@ -1,9 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : GameBehaviour
 {
+
+    public static event Action<GameObject> OnEnemyHit = null;
+    public static event Action<GameObject> OnEnemyDie = null;
+
     public PatrolType myPatrol;
     float baseSpeed = 1f;
     public float mySpeed = 1f;
@@ -11,6 +16,7 @@ public class Enemy : MonoBehaviour
 
     int baseHealth = 100;
     public int myHealth;
+    public int myScore;
 
     [Header("AI")]
     public EnemyType myType;
@@ -26,7 +32,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
 
-        _EM = FindObjectOfType<EnemyManager>();
+        _EM = EnemyManager.INSTANCE; //Capital means can't changed.
 
         switch(myType)
         {
@@ -34,24 +40,28 @@ public class Enemy : MonoBehaviour
                 myHealth = baseHealth;
                 mySpeed = baseSpeed;
                 myPatrol = PatrolType.Linear;
+                myScore = 100;
                 break;
 
             case EnemyType.TwoHand:
                 myHealth = baseHealth * 2;
                 mySpeed = baseSpeed / 2;
                 myPatrol = PatrolType.Random;
+                myScore = 200;
                 break;
 
             case EnemyType.Archer:
                 myHealth = baseHealth / 2;
                 mySpeed = baseSpeed * 2;
                 myPatrol = PatrolType.Loop;
+                myScore = 300;
                 break;
 
         }
 
         SetupAI();
     }
+
 
     void SetupAI()
     {
@@ -68,13 +78,16 @@ public class Enemy : MonoBehaviour
         //Week 4
         if (Input.GetKeyDown(KeyCode.Escape))
             StopAllCoroutines();
+
+        if (Input.GetKeyDown(KeyCode.H))
+            Hit(30);
     }
 
-
+    //Week5
     IEnumerator Move()
     {
 
-        switch(myPatrol)
+        switch (myPatrol)
         {
             case PatrolType.Linear:
                 moveToPos = _EM.spawnPoints[patrolPoint];
@@ -101,7 +114,42 @@ public class Enemy : MonoBehaviour
 
         yield return new WaitForSeconds(1);
         StartCoroutine(Move());
+
+    }
+
+    //week 5
+    private void Hit(int _damage)
+    {
+        myHealth -= _damage;
+        ScaleObject(this.gameObject, transform.localScale * 1.5f);
         
+        if (myHealth <= 0)
+        { 
+            Die(); 
+        }
+        else 
+        {
+            OnEnemyHit?.Invoke(this.gameObject);
+            //_GM.AddScore(myScore);
+        }
+    }
+
+    private void Die()
+    {
+       
+        StopAllCoroutines();
+        OnEnemyDie?.Invoke(this.gameObject);
+        // _GM.AddScore(myScore * 2);
+        // _EM.KillEnemy(this.gameObject);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Projectile"))
+        {
+            Hit(collision.gameObject.GetComponent<Projectile>().damage);
+            Destroy(collision.gameObject);
+        }
     }
 
 

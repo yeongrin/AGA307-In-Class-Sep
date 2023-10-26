@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
-{
-    // Start is called before the first frame update
+  
+{   //Week 5
+    public int damage = 20;
+    
     void Start()
     {
         Destroy(this.gameObject,3);

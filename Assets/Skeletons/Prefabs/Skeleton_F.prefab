@@ -2090,6 +2090,7 @@ GameObject:
   - component: {fileID: 403846}
   - component: {fileID: 9550666}
   - component: {fileID: 385282685726278336}
+  - component: {fileID: 3220642916087087900}
   m_Layer: 0
   m_Name: Skeleton_F
   m_TagString: Untagged
@@ -2154,6 +2155,20 @@ MonoBehaviour:
   myType: 1
   moveToPos: {fileID: 0}
   _EM: {fileID: 0}
+--- !u!136 &3220642916087087900
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185486}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.25
+  m_Height: 1.6
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!1 &185512
 GameObject:
   m_ObjectHideFlags: 0
