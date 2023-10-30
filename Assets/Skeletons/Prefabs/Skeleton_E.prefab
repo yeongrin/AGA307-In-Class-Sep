@@ -769,6 +769,7 @@ MonoBehaviour:
   myPatrol: 0
   mySpeed: 8
   myHealth: 0
+  myScore: 0
   myType: 1
   moveToPos: {fileID: 0}
   _EM: {fileID: 0}
