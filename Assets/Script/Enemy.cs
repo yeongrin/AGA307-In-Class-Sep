@@ -15,43 +15,47 @@ public class Enemy : GameBehaviour
     float moveDistance = 1000f;
 
     int baseHealth = 100;
+    int maxHealth; //Week 6
     public int myHealth;
     public int myScore;
+    EnemyHealthBar healthBar;//Week 6
+
+    public string myName;//Week 6
 
     [Header("AI")]
     public EnemyType myType;
     public Transform moveToPos; //Needed for all patrols
-    public EnemyManager _EM;
     Transform startPos;      //Needed for loop patrol movement
     Transform endPos;        //Needed for loop patrol movement
     bool reverse;            //Needed for loop patrol movement
     int patrolPoint = 0;     //Needed for linear patrol movement
 
 
-    // Start is called before the first frame update
+    
     void Start()
     {
 
-        _EM = EnemyManager.INSTANCE; //Capital means can't changed.
+        healthBar = GetComponentInChildren<EnemyHealthBar>(); 
+        SetName(_EM.GetEnemyName());//Week 6
 
         switch(myType)
         {
             case EnemyType.OneHand:
-                myHealth = baseHealth;
+                myHealth = maxHealth = baseHealth;
                 mySpeed = baseSpeed;
                 myPatrol = PatrolType.Linear;
                 myScore = 100;
                 break;
 
             case EnemyType.TwoHand:
-                myHealth = baseHealth * 2;
+                myHealth = maxHealth = baseHealth * 2;
                 mySpeed = baseSpeed / 2;
                 myPatrol = PatrolType.Random;
                 myScore = 200;
                 break;
 
             case EnemyType.Archer:
-                myHealth = baseHealth / 2;
+                myHealth = maxHealth = baseHealth / 2;
                 mySpeed = baseSpeed * 2;
                 myPatrol = PatrolType.Loop;
                 myScore = 300;
@@ -66,7 +70,6 @@ public class Enemy : GameBehaviour
     void SetupAI()
     {
         //Week 4
-        _EM = FindObjectOfType<EnemyManager>();
         startPos = Instantiate (new GameObject(), transform.position, transform.rotation).transform;
         endPos = _EM.GetRandomSpawnPoint();
         moveToPos = endPos;
@@ -81,6 +84,13 @@ public class Enemy : GameBehaviour
 
         if (Input.GetKeyDown(KeyCode.H))
             Hit(30);
+    }
+
+    //Week 6
+    public void SetName(string _name)
+    {
+        name = _name;
+        healthBar.SetName(_name);
     }
 
     //Week5
@@ -121,7 +131,8 @@ public class Enemy : GameBehaviour
     private void Hit(int _damage)
     {
         myHealth -= _damage;
-        ScaleObject(this.gameObject, transform.localScale * 1.5f);
+        healthBar.UpdateHealthBar(myHealth, baseHealth);//Week 6
+        ScaleObject(this.gameObject, transform.localScale * 1.1f);
         
         if (myHealth <= 0)
         { 

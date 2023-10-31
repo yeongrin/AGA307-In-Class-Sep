@@ -57,6 +57,7 @@ public class EnemyManager : Singleton<EnemyManager>
             int rnd = Random.Range(0, enemyTypes.Length);
             GameObject enemy = Instantiate(enemyTypes[rnd], spawnPoints[i].position, spawnPoints[i].rotation);
             enemies.Add(enemy);
+            ShowEnemyCount();
             yield return new WaitForSeconds(2);
         }
 
@@ -73,7 +74,9 @@ public class EnemyManager : Singleton<EnemyManager>
             int rnd = Random.Range(0, enemyTypes.Length);
             GameObject enemy = Instantiate(enemyTypes[rnd], spawnPoints[i].position, spawnPoints[i].rotation);
             enemies.Add(enemy);
+            SetEnemyName(enemy);
         }
+        ShowEnemyCount();
     }
 
 
@@ -95,7 +98,21 @@ public class EnemyManager : Singleton<EnemyManager>
     /// </summary>
     void ShowEnemyCount()
     {
-        print("number of enemies: " + enemies.Count);
+        _UI.UpdateEnemyCount(enemies.Count);
+    }
+
+    /// <summary>
+    /// Sets the enemy Name//Week 6
+    /// </summary>
+    /// <param name="_enemy"></param>
+    void SetEnemyName(GameObject _enemy)
+    {
+        //_enemy.GetComponent<Enemy>().SetName(enemyNames[Random.Range(0, enemyNames.Length)]);
+    }
+
+    public string GetEnemyName()
+    { //Week 6
+        return enemyNames[Random.Range(0, enemyNames.Length)];
     }
 
     /// <summary>

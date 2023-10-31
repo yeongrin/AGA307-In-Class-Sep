@@ -14,7 +14,7 @@ public class GameManager : Singleton<GameManager>
     public int score = 0;
     int scoreMultiplier = 1;
 
-    // Start is called before the first frame update
+    
     void Start()
     {
         switch(difficulty)
@@ -31,10 +31,11 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    // Update is called once per frame
+    
     public void AddScore(int _points)
     {
-        score += _points * scoreMultiplier; 
+        score += _points * scoreMultiplier;
+        _UI.UpdateScore(score); //Week 6
     }
 
     void OnEnemyHit(GameObject _enemy)

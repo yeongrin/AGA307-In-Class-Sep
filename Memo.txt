@@ -1,0 +1,1 @@
+If submmit assessment It must delete library folder.
