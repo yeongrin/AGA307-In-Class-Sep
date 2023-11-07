@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class TriggerPad : MonoBehaviour
 {
-
     public GameObject triggeredObject;
 
     private void OnTriggerEnter(Collider other)

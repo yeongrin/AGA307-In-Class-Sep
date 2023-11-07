@@ -8,7 +8,6 @@ public enum Difficulty {  Easy, Medium, Hard }
 
 public class GameManager : Singleton<GameManager>
 {
-
     public GameState gameState;
     public Difficulty difficulty;
     public int score = 0;
@@ -31,7 +30,11 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    
+    public void ChangeGameState(GameState _gameState)
+    {
+        gameState = _gameState;
+    }
+
     public void AddScore(int _points)
     {
         score += _points * scoreMultiplier;
