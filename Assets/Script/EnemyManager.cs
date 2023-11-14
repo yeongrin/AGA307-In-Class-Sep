@@ -124,7 +124,7 @@ public class EnemyManager : Singleton<EnemyManager>
         if (enemies.Count == 0)
             return;
 
-        Destroy(_enemy);
+        //Destroy(_enemy, 5); Week7
         enemies.Remove(_enemy);
         ShowEnemyCount();
     }

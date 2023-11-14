@@ -827,9 +827,11 @@ GameObject:
   - component: {fileID: 461210}
   - component: {fileID: 3337786}
   - component: {fileID: 2365288}
+  - component: {fileID: 6291345903936245834}
+  - component: {fileID: 2500654200289812857}
   m_Layer: 0
   m_Name: Axe
-  m_TagString: Untagged
+  m_TagString: Sword
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -899,6 +901,32 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &6291345903936245834
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136750}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.1
+  m_Height: 0.8
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 0.2}
+--- !u!114 &2500654200289812857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cae78e1dcfa8dd45b6713db8290a07f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &138828
 GameObject:
   m_ObjectHideFlags: 0
@@ -2258,7 +2286,7 @@ Animator:
   m_GameObject: {fileID: 188982}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 20300ac630e0fcd4dbab63a9b39cdafa, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: af59b630a47f9c74290a94a21100fa35, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -2284,10 +2312,10 @@ MonoBehaviour:
   mySpeed: 8
   myHealth: 0
   myScore: 0
+  myAttackRange: 7
   myName: 
   myType: 1
   moveToPos: {fileID: 0}
-  _EM: {fileID: 0}
 --- !u!136 &829561885693089174
 CapsuleCollider:
   m_ObjectHideFlags: 0

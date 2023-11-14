@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : GameBehaviour
+public class PlayerMovement : Singleton<PlayerMovement>
 {
     public CharacterController controller;
     public float speed = 10f;
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
+    public float health = 100f;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
@@ -41,5 +42,15 @@ public class PlayerMovement : GameBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
+    }
+
+    public void Hit(int _damage)//Week 7
+    {
+        health -= _damage;
+        print("Player health: " + health);
+        if (health < 0)
+        {
+            _GM.gameState = GameState.GameOver;
+        }
     }
 }
