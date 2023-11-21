@@ -11,7 +11,7 @@ public class Doors : MonoBehaviour
     // Start is called before the first frame update
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if(other.CompareTag("Player") || other. CompareTag ("Enemy"))
         {
           door1.SetActive(false);
           door2.SetActive(false);
@@ -22,7 +22,7 @@ public class Doors : MonoBehaviour
     // Update is called once per frame
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.CompareTag("Enemy"))
         {
             door1.SetActive(true);
             door2.SetActive(true);

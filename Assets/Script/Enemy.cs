@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.AI;
 
 public class Enemy : GameBehaviour
 {
@@ -10,6 +13,7 @@ public class Enemy : GameBehaviour
     public static event Action<GameObject> OnEnemyDie = null;
 
     public PatrolType myPatrol;
+    
     float baseSpeed = 1f;
     public float mySpeed = 1f;
     float moveDistance = 1000f;
@@ -18,8 +22,6 @@ public class Enemy : GameBehaviour
     int maxHealth; //Week 6
     public int myHealth;
     public int myScore;
-
-    public float myAttackRange = 2f; //Week7
     public int myDamage = 20;
 
     EnemyHealthBar healthBar;//Week 6
@@ -32,12 +34,18 @@ public class Enemy : GameBehaviour
     Transform endPos;        //Needed for loop patrol movement
     bool reverse;            //Needed for loop patrol movement
     int patrolPoint = 0;     //Needed for linear patrol movement
+    public float attackDistance = 2f; //Week7
+    public float detectTime = 5f; //Week 9
+    public float detectDistance = 10f;//Week 9
+    int currentWaypoint; //Week 9
+    NavMeshAgent agent;
 
     Animator anim; //Week 7
     
     void Start()
     {
         anim = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
         healthBar = GetComponentInChildren<EnemyHealthBar>(); 
         SetName(_EM.GetEnemyName());//Week 6
 
@@ -46,7 +54,7 @@ public class Enemy : GameBehaviour
             case EnemyType.OneHand:
                 myHealth = maxHealth = baseHealth;
                 mySpeed = baseSpeed;
-                myPatrol = PatrolType.Linear;
+                myPatrol = PatrolType.Patrol;
                 myScore = 100;
                 myDamage = 20;
                 break;
@@ -54,7 +62,7 @@ public class Enemy : GameBehaviour
             case EnemyType.TwoHand:
                 myHealth = maxHealth = baseHealth * 2;
                 mySpeed = baseSpeed / 2;
-                myPatrol = PatrolType.Random;
+                myPatrol = PatrolType.Detect;
                 myScore = 200;
                 myDamage = 30;
                 break;
@@ -62,7 +70,7 @@ public class Enemy : GameBehaviour
             case EnemyType.Archer:
                 myHealth = maxHealth = baseHealth / 2;
                 mySpeed = baseSpeed * 2;
-                myPatrol = PatrolType.Loop;
+                myPatrol = PatrolType.Chase;
                 myScore = 300;
                 myDamage = 50;
                 break;
@@ -79,21 +87,89 @@ public class Enemy : GameBehaviour
 
     void SetupAI()
     {
+        currentWaypoint = UnityEngine.Random.Range(0, _EM.spawnPoints.Length);
+        agent.SetDestination(_EM.spawnPoints[currentWaypoint].position);
+        ChangeSpeed(mySpeed);  
+
+
         //Week 4
-        startPos = Instantiate (new GameObject(), transform.position, transform.rotation).transform;
-        endPos = _EM.GetRandomSpawnPoint();
-        moveToPos = endPos;
-        StartCoroutine(Move());
+        //startPos = Instantiate (new GameObject(), transform.position, transform.rotation).transform;
+        //endPos = _EM.GetRandomSpawnPoint();
+        //moveToPos = endPos;
+        //StartCoroutine(Move());
+    }
+
+    //week 
+    void ChangeSpeed(float _speed)
+    {
+        agent.speed = _speed;
     }
 
     private void Update()
     {
-        //Week 4
-        if (Input.GetKeyDown(KeyCode.Escape))
-            StopAllCoroutines();
+        if (myPatrol == PatrolType.Die)
+            return;
 
-        if (Input.GetKeyDown(KeyCode.H))
-            Hit(30);
+        //Always get the distance between the player and me
+        float distToPlayer = Vector3.Distance(transform.position, _PLAYER.transform.position);
+
+        if(distToPlayer <= detectDistance && myPatrol != PatrolType.Attack)
+        {
+            if(myPatrol != PatrolType.Chase)
+            {
+                myPatrol = PatrolType.Detect;
+            }
+        }
+
+        //Set the animator speed paramater to that of my speed
+        anim.SetFloat("Speed", mySpeed);
+
+        //Switching
+
+        switch (myPatrol)
+        {
+            case PatrolType.Patrol:
+                //Get the distance between us and the current waypoint
+                float distToWaypoint = Vector3.Distance(transform.position, _EM.spawnPoints[currentWaypoint].position);
+                //If the distance is close enough, get a new waypoint
+                if (distToWaypoint < 1)
+                    SetupAI();
+                //Reset the detect time
+                detectTime = 5;
+                break;
+
+            case PatrolType.Detect:
+                //Set the destination to ourself, essentionally stopping us
+                agent.SetDestination(transform.position);
+                //Stop our Speed
+                ChangeSpeed(0);
+                //Decrement our detect time
+                detectTime -= Time.deltaTime;
+                if(distToPlayer <= detectDistance)
+                {
+                    myPatrol = PatrolType.Chase;
+                    detectTime = 5;
+                }
+                if(detectTime <= 0)
+                {
+                    myPatrol = PatrolType.Patrol;
+                    SetupAI();
+                }
+                break;
+
+            case PatrolType.Chase:
+                //Set the destination to that of player
+                agent.SetDestination(_PLAYER.transform.position);
+                //Increase th speed of which to chase the player
+                ChangeSpeed(mySpeed * 2);
+                //If the player gets ouside the detect distance, go back to the detect state
+                if (distToPlayer > detectDistance)
+                    myPatrol = PatrolType.Detect;
+                //If we are close to the player, then attack
+                if (distToPlayer <= attackDistance)
+                    StartCoroutine(Attack());
+                break;
+        }
     }
 
     //Week 6
@@ -104,21 +180,21 @@ public class Enemy : GameBehaviour
     }
 
     //Week5
-    IEnumerator Move()
+   /* IEnumerator Move()
     {
 
         switch (myPatrol)
         {
-            case PatrolType.Linear:
+            case PatrolType.Patrol:
                 moveToPos = _EM.spawnPoints[patrolPoint];
                 patrolPoint = patrolPoint != _EM.spawnPoints.Length ? patrolPoint + 1 : 0;
                 break;
 
-            case PatrolType.Random:
+            case PatrolType.Detect:
                 moveToPos = _EM.GetRandomSpawnPoint();
                 break;
 
-            case PatrolType.Loop:
+            case PatrolType.Chase:
                 moveToPos = reverse ? startPos : endPos;
                 reverse = !reverse;
                 break;
@@ -127,7 +203,7 @@ public class Enemy : GameBehaviour
         transform.LookAt(moveToPos);
         while (Vector3.Distance(transform.position, moveToPos.position) > 0.3f)
         {
-            if(Vector3.Distance(transform.position, _PLAYER.transform.position) < myAttackRange)
+            if(Vector3.Distance(transform.position, _PLAYER.transform.position) < attackDistance)
             {
                 StopAllCoroutines();//Week 7
                 StartCoroutine(Attack());
@@ -141,14 +217,18 @@ public class Enemy : GameBehaviour
         yield return new WaitForSeconds(1);
         StartCoroutine(Move());
 
-    }
+    }*/
 
     //Week7
     IEnumerator Attack()
     {
+        myPatrol = PatrolType.Attack;
+        ChangeSpeed(0);
         PlayAnimation("Attack");
         yield return new WaitForSeconds(1);
-        StartCoroutine(Move());
+        ChangeSpeed(mySpeed);
+        myPatrol = PatrolType.Chase;
+        
     }
 
     //week 5
@@ -172,6 +252,8 @@ public class Enemy : GameBehaviour
 
     private void Die()
     {
+        myPatrol = PatrolType.Die;
+        ChangeSpeed(0);
         GetComponent<Collider>().enabled = false; //Week7
         PlayAnimation("Die"); //Week7
         StopAllCoroutines();
@@ -195,20 +277,5 @@ public class Enemy : GameBehaviour
             Destroy(collision.gameObject);
         }
     }
-
-
-    /* IEnumerator Move()
-     {   Week 4
-        for (int i = 0; i < moveDistance; i++)
-        {
-            transform.Translate(Vector3.forward * Time.deltaTime * mySpeed);
-            yield return null;
-
-        }
-
-        transform.Rotate(Vector3.up * 180);
-        yield return new WaitForSeconds(Random.Range(1, 3));
-        StartCoroutine(Move());
-      }*/
 
 }   

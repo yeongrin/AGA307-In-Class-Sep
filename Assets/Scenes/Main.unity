@@ -108,8 +108,8 @@ NavMeshSettings:
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
-    agentSlope: 45
-    agentClimb: 0.4
+    agentSlope: 60
+    agentClimb: 0.8
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 9804374651251ba43842d129e2c1e62d, type: 2}
 --- !u!1 &2276005
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,7 +212,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1748933002560585229, guid: 339915cba9750484f9aaf83049a08460, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15
+      value: -9
       objectReference: {fileID: 0}
     - target: {fileID: 1748933002560585229, guid: 339915cba9750484f9aaf83049a08460, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1436,7 +1436,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 790309197}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12, y: 0.5, z: -5}
+  m_LocalPosition: {x: -31.83, y: 0.5, z: -5}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1912,6 +1912,10 @@ PrefabInstance:
     - target: {fileID: 908172831450305968, guid: cd32442e201a7a145a8f67aa484acd4d, type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 908172831450305968, guid: cd32442e201a7a145a8f67aa484acd4d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 908172831483299004, guid: cd32442e201a7a145a8f67aa484acd4d, type: 3}
       propertyPath: m_Layer
@@ -2407,7 +2411,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1748933002560585229, guid: 339915cba9750484f9aaf83049a08460, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1748933002560585229, guid: 339915cba9750484f9aaf83049a08460, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3121,7 +3125,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!95 &1603253102
 Animator:
   serializedVersion: 4
