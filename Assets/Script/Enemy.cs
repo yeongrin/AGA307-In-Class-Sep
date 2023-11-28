@@ -41,11 +41,13 @@ public class Enemy : GameBehaviour
     NavMeshAgent agent;
 
     Animator anim; //Week 7
+    AudioSource audioSource;//Week 10
     
     void Start()
     {
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
+        audioSource = GetComponent<AudioSource>();//Week 10
         healthBar = GetComponentInChildren<EnemyHealthBar>(); 
         SetName(_EM.GetEnemyName());//Week 6
 
@@ -225,6 +227,7 @@ public class Enemy : GameBehaviour
         myPatrol = PatrolType.Attack;
         ChangeSpeed(0);
         PlayAnimation("Attack");
+        _AM.PlaySound(_AM.GetEnemyAttackSound(), audioSource);
         yield return new WaitForSeconds(1);
         ChangeSpeed(mySpeed);
         myPatrol = PatrolType.Chase;
@@ -246,7 +249,8 @@ public class Enemy : GameBehaviour
         {
             PlayAnimation("Hit");
             OnEnemyHit?.Invoke(this.gameObject);
-            //_GM.AddScore(myScore);
+            _AM.PlaySound(_AM.GetEnemyHitSound(), audioSource);//Week 10
+
         }
     }
 
@@ -258,15 +262,25 @@ public class Enemy : GameBehaviour
         PlayAnimation("Die"); //Week7
         StopAllCoroutines();
         OnEnemyDie?.Invoke(this.gameObject);
+        _AM.PlaySound(_AM.GetEnemyDieSound(), audioSource);//Week 10
         
         // _GM.AddScore(myScore * 2);
         // _EM.KillEnemy(this.gameObject);
+
     }
 
     void PlayAnimation(string _animationName)
     {
         int rnd = UnityEngine.Random.Range(1, 4);
         anim.SetTrigger(_animationName + rnd);
+    }
+    
+    //Week 10
+
+    public void PlayFootstep()
+    {
+        _AM.PlaySound(_AM.GetFootstepSound(), audioSource, 0.1f);
+        audioSource.volume = 0.1f;
     }
 
     private void OnCollisionEnter(Collision collision)

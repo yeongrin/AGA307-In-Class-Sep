@@ -17,6 +17,15 @@ public class PlayerMovement : Singleton<PlayerMovement>
     private Vector3 velocity;
     private bool isGrounded;
 
+    AudioSource audioSource;
+    public float stepRate = 0.5f;
+    float stepCooldown;
+    public AudioClip footstep;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();//NullReference
+    }
 
     // Update is called once per frame
     void Update()
@@ -42,15 +51,30 @@ public class PlayerMovement : Singleton<PlayerMovement>
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
+        //Footstep Audio Stuff
+        stepCooldown -= Time.deltaTime;
+        if(stepCooldown < 0 && isGrounded && (move.x !=0 || move.z != 0)) //When Player walk, sound play and stop, sound stop.
+        {
+            stepCooldown = stepRate;
+            _AM.PlaySound(_AM.GetEnemyDieSound(), audioSource);
+        }
+
     }
 
     public void Hit(int _damage)//Week 7
     {
         health -= _damage;
+        _AM.PlaySound(_AM.GetEnemyHitSound(), audioSource);
         print("Player health: " + health);
         if (health < 0)
         {
             _GM.gameState = GameState.GameOver;
+            _AM.PlaySound(_AM.GetEnemyDieSound(), audioSource);
         }
+    }
+
+    void PlaySound(AudioClip _clip)
+    {
+
     }
 }
