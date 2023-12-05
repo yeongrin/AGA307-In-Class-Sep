@@ -10,6 +10,7 @@ public class GameBehaviour : MonoBehaviour
     protected static UIManager _UI { get { return UIManager.INSTANCE; } }
     protected static PlayerMovement _PLAYER { get { return PlayerMovement.INSTANCE; } } //week 7
     protected static AudioManager _AM { get { return AudioManager.INSTANCE; } }
+    protected static GameDataManager _DATA { get { return GameDataManager.INSTANCE; } }
 
     /// <summary>
     /// Scale all objects in a list to a new scale

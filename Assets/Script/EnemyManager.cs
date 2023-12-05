@@ -127,6 +127,7 @@ public class EnemyManager : Singleton<EnemyManager>
         //Destroy(_enemy, 5); Week7
         enemies.Remove(_enemy);
         ShowEnemyCount();
+        _DATA.SetEnemyKillTotal();//Week 11
     }
 
     void KillAllEnemies()
